@@ -5,14 +5,14 @@ import type {Product} from '@shopify/hydrogen-react/storefront-api-types';
 type ProductCardTypes = {product: Product};
 
 export default function ProductCard({product}: ProductCardTypes) {
-  const {title, variants} = product;
+  const {title, variants, handle} = product;
   const {price, compareAtPrice, image} = variants?.nodes[0] ?? {};
   const isDiscounted = compareAtPrice
     ? compareAtPrice.amount > price?.amount
     : false;
 
   return (
-    <Link to={`/products/${product.handle}`}>
+    <Link to={`/products/${handle}`}>
       <div className="grid gap-6">
         <div className="shadow-sm rounded relative">
           {isDiscounted && (
@@ -23,14 +23,14 @@ export default function ProductCard({product}: ProductCardTypes) {
           {image && (
             <Image
               data={image}
-              alt={product.title}
-              sizes="(max-width: 32em) 100vw, 33vw"
+              alt={title}
+              sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
             />
           )}
         </div>
         <div className="grid gap-1">
           <h3 className="max-w-prose text-copy w-full overflow-hidden whitespace-nowrap text-ellipsis ">
-            {product.title}
+            {title}
           </h3>
           <div className="flex gap-4">
             <span className="max-w-prose whitespace-pre-wrap inherit text-copy flex gap-4">

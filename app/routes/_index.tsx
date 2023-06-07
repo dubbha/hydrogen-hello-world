@@ -1,6 +1,7 @@
 import {useLoaderData, Link} from '@remix-run/react';
 import type {LoaderArgs} from '@shopify/remix-oxygen';
 import {Image} from '@shopify/hydrogen';
+import type {CollectionConnection} from '@shopify/hydrogen-react/storefront-api-types';
 
 export function meta() {
   return [
@@ -10,11 +11,13 @@ export function meta() {
 }
 
 export async function loader({context}: LoaderArgs) {
-  return await context.storefront.query(COLLECTIONS_QUERY);
+  return await context.storefront.query<{
+    collections: CollectionConnection;
+  }>(COLLECTIONS_QUERY);
 }
 
 export default function Index() {
-  const {collections} = useLoaderData();
+  const {collections} = useLoaderData<typeof loader>();
 
   return (
     <section className="w-full gap-4">
@@ -22,7 +25,7 @@ export default function Index() {
         Collections
       </h2>
       <div className="grid-flow-row grid gap-2 gap-y-6 md:gap-4 lg:gap-6 grid-cols-1 sm:grid-cols-3">
-        {collections.nodes.map((collection: Collection) => {
+        {collections.nodes.map((collection) => {
           return (
             <Link to={`/collections/${collection.handle}`} key={collection.id}>
               <div className="grid gap-4">
@@ -31,7 +34,7 @@ export default function Index() {
                     alt={`Image of ${collection.title}`}
                     data={collection.image}
                     key={collection.id}
-                    sizes="(max-width: 32em) 100vw, 33vw"
+                    sizes="(max-width: 640px) 100vw, 33vw"
                     crop="center"
                   />
                 )}
@@ -46,18 +49,6 @@ export default function Index() {
     </section>
   );
 }
-
-type Collection = {
-  id: string;
-  title: string;
-  handle: string;
-  image: {
-    altText: string;
-    width: number;
-    height: number;
-    url: string;
-  };
-};
 
 const COLLECTIONS_QUERY = `#graphql
   query FeaturedCollections {

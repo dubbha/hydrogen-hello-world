@@ -2,17 +2,12 @@ import {useState, useEffect} from 'react';
 import {useFetcher} from '@remix-run/react';
 import type {
   Product,
-  PageInfo,
+  Collection,
 } from '@shopify/hydrogen-react/storefront-api-types';
 import ProductCard from './ProductCard';
 
 type ProductGridProps = {
-  collection: {
-    products: {
-      nodes: Product[];
-      pageInfo: PageInfo;
-    };
-  };
+  collection: Collection;
   url: string;
 };
 
